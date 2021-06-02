@@ -1,8 +1,8 @@
 class Notes {
-  int id;
-  String title;
-  String content;
-  DateTime date;
+  int? id;
+  String? title;
+  String? content;
+  DateTime? date;
 
   Notes({this.id, this.title, this.content, this.date});
 
@@ -18,7 +18,7 @@ class Notes {
       '_id': this.id,
       'title': this.title,
       'content': this.content,
-      'date': this.date.toIso8601String()
+      'date': this.date?.toIso8601String()
     };
   }
 }

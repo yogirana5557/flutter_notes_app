@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_notes_app/models/notes.dart';
+import 'package:flutter_notes_app/models/note.dart';
 import 'package:flutter_notes_app/utils/app_extensions.dart';
 import 'package:intl/intl.dart';
 
 class NotesCardWidget extends StatelessWidget {
   const NotesCardWidget({
-    this.noteData,
-    this.onTapAction,
+    required this.noteData,
+    required this.onTapAction,
     this.searchTerm = "",
-    Key key,
-  }) : super(key: key);
+  });
 
-  final Notes noteData;
-  final Function(Notes noteData) onTapAction;
+  final Note noteData;
+  final Function(Note noteData) onTapAction;
   final String searchTerm;
 
   @override
   Widget build(BuildContext context) {
-    String neatDate = DateFormat.yMd().add_jm().format(noteData.date);
+    // String neatDate = DateFormat.yMd().add_jm().format(noteData.date);
+    String neatDate = DateFormat.yMd().add_jm().format(DateTime.now());
     Color color = noteData.title.colorFromText();
 
     return Container(
@@ -37,68 +37,67 @@ class NotesCardWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         color: Theme.of(context).cardColor,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            onTapAction(noteData);
-          },
-          splashColor: color.withAlpha(20),
-          highlightColor: color.withAlpha(10),
-          child: Container(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    maxLines: 2,
-                    text: TextSpan(
-                      children: highlightOccurrences(
-                          noteData.title, searchTerm, false),
-                      style: TextStyle(
-                          color: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              .color,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: 8),
-                      child: RichText(
-                        maxLines: 2,
-                        text: TextSpan(
-                          children: highlightOccurrences(
-                              noteData.content, searchTerm, true),
-                          style: TextStyle(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              onTapAction(noteData);
+            },
+            splashColor: color.withAlpha(20),
+            highlightColor: color.withAlpha(10),
+            child: Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      maxLines: 2,
+                      text: TextSpan(
+                        children: highlightOccurrences(
+                            noteData.title, searchTerm, false),
+                        style: TextStyle(
                             color: Theme.of(context)
                                 .textTheme
-                                .headline6
+                                .headline6!
                                 .color,
-                          ),
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(top: 14),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      '$neatDate',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade400,
-                          fontWeight: FontWeight.w500),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
-                  ),
-                ],
-              ))
-        ),
+                    Container(
+                        margin: EdgeInsets.only(top: 8),
+                        child: RichText(
+                          maxLines: 2,
+                          text: TextSpan(
+                            children: highlightOccurrences(
+                                noteData.content, searchTerm, true),
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .color,
+                            ),
+                          ),
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(top: 14),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        '$neatDate',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade400,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ))),
       ),
     );
   }
 
   List<TextSpan> highlightOccurrences(
       String source, String query, bool shouldWrap) {
-    if (query == null || query.isEmpty) {
+    if (query.isEmpty) {
       return <TextSpan>[TextSpan(text: source)];
     }
 
@@ -146,7 +145,7 @@ class NotesCardWidget extends StatelessWidget {
         children.add(TextSpan(
           text: source.substring(match.start, match.end),
           style:
-              const TextStyle(fontWeight: FontWeight.bold, color: matchColor),
+          const TextStyle(fontWeight: FontWeight.bold, color: matchColor),
         ));
       }
 
